@@ -1,0 +1,4 @@
+data:
+  raw_path: data/raw/data.xls
+  db_path: data/processed/credit_clients.db
+  table_name: credit_data
