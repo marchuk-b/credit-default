@@ -12,8 +12,9 @@ venv/
 logs/
 *.log
 
-# Data (processed)
+# Data
 data/processed/
+data/db/
 
 # OS files
 .DS_Store
