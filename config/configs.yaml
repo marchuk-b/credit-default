@@ -4,8 +4,11 @@ data:
   table_name: credit_data
   balanced_table: balanced_credit_data
   target: default
+  model_name: xgboost_credit
+  cleaned_path: data/processed/cleaned_data.csv
 directories:
   data_proc_dir: data/processed/
   input_dir: data/input
   archive_dir: data/archived
+  artifacts_dir: artifacts/
 
