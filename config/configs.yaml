@@ -6,4 +6,6 @@ data:
   target: default
 directories:
   data_proc_dir: data/processed/
+  input_dir: data/input
+  archive_dir: data/archived
 

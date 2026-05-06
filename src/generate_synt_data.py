@@ -1,15 +1,12 @@
 import pandas as pd
 import os
-import sqlite3
 from typing import Tuple
 from ctgan import CTGAN
 from config.config import load_config
 
-config = load_config()
-db_path = config["data"]["db_path"]
-balanced_table = config["data"]["balanced_table"]
 
 def generate_balanced_credit_data(train_df: pd.DataFrame, epochs=50, batch_size=500, logger=None) -> Tuple[pd.DataFrame, CTGAN]:
+    config = load_config()
     target_col = config["data"]["target"]
 
     # Minority Class (Default = 1)
@@ -59,15 +56,5 @@ def generate_balanced_credit_data(train_df: pd.DataFrame, epochs=50, batch_size=
     
     # Combine for internal use
     balanced = pd.concat([train_df, synthetic_samples], axis=0).reset_index(drop=True)
-
-    conn = sqlite3.connect(db_path)
-    balanced.to_sql(balanced_table, conn, if_exists='replace', index=False)
-    conn.close()
-
-    msg = f"Balanced dataset saved to table: {balanced_table}"
-    if logger:
-        logger.info(msg)
-    else:
-        print(msg)
     
     return balanced, syn

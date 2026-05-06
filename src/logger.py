@@ -1,14 +1,30 @@
 import logging
 import os
 
+def setup_logger():
+    # Create logs directory if it doesn't exist
+    os.makedirs("logs", exist_ok=True)
+    
+    # Create a custom logger
+    logger = logging.getLogger("CreditPipeline")
+    
+    # Check if handlers already exist to avoid duplicate logs
+    if not logger.handlers:
+        logger.setLevel(logging.INFO)
 
-def setup_logger(log_path: str = "logs/etl.log"):
-    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        # Create handlers
+        c_handler = logging.StreamHandler()      # Console (Terminal) handler
+        f_handler = logging.FileHandler("logs/conveyor.log") # File handler
 
-    logging.basicConfig(
-        filename=log_path,
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s"
-    )
+        # Create formatting and add it to handlers
+        c_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        f_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        
+        c_handler.setFormatter(c_format)
+        f_handler.setFormatter(f_format)
 
-    return logging.getLogger()
+        # Add handlers to the logger
+        logger.addHandler(c_handler)
+        logger.addHandler(f_handler)
+
+    return logger

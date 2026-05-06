@@ -186,7 +186,6 @@ def load_data(df: pd.DataFrame, db_path: str, table_name: str, logger=None) -> N
         df.to_sql(table_name, conn, if_exists="replace", index=False)
         msg = f"Data loaded successfully into table '{table_name}' ({len(df)} rows)"
         if logger: logger.info(msg)
-        print(msg)
     except Exception as e:
         if logger: logger.error(f"Failed to load data to database: {e}")
         raise
