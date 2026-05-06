@@ -2,3 +2,7 @@ xlrd
 sqlite3
 yaml
 watchdog
+sklearn
+xgboost
+matplotlib
+seaborn
