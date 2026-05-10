@@ -1,6 +1,8 @@
 import pandas as pd
+from config.config import load_config
 
-df = pd.read_excel("./data/raw/data.xls")
+config = load_config()
+df = pd.read_excel(config["data"]["test_data"])
 
 print("Shape:", df.shape)
 print("\nColumns:", df.columns.tolist())

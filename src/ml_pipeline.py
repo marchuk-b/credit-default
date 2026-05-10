@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from xgboost import XGBClassifier
 
 class CreditScoringPipeline:
-    def __init__(self, data_path, base_output_dir, model_name="xgboost_credit_model"):
+    def __init__(self, data_path, base_output_dir, model_name="xgboost_credit"):
         self.data_path = data_path
         self.base_output_dir = base_output_dir
         self.model_name = model_name
@@ -48,14 +48,14 @@ class CreditScoringPipeline:
     def check_data_quality(self):
         self.logger.info("Automated Data Quality Control...")
         
-        # 1. Missing values
+        # Missing values
         missing_ratios = self.df.isnull().mean().to_dict()
         total_missing = sum(missing_ratios.values())
         
-        # 2. Duplicates
+        # Duplicates
         duplicates = self.df.duplicated().sum()
         
-        # 3. Class balance
+        # Class balance
         class_balance = self.df['default'].value_counts(normalize=True).to_dict()
 
         dq_stats = {
@@ -145,9 +145,9 @@ class CreditScoringPipeline:
 
 if __name__ == "__main__":
     config = load_config()
-    DATA_PATH = config["data"]["cleaned_path"]
-    BASE_OUTPUT_DIR = config["directories"]["artifacts_dir"]
-    model_name = config["data"]["model_name"]
+    DATA = config["data"]["cleaned_data"]
+    ARTIFACTS_DIR = config["directories"]["artifacts_dir"]
+    MODEL_NAME = config["ml"]["model_name"]
 
-    pipeline = CreditScoringPipeline(DATA_PATH, BASE_OUTPUT_DIR, model_name=model_name)
+    pipeline = CreditScoringPipeline(DATA, ARTIFACTS_DIR, model_name=MODEL_NAME)
     pipeline.run()

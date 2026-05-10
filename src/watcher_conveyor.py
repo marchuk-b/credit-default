@@ -11,13 +11,12 @@ from src.generate_synt_data import generate_balanced_credit_data
 from src.clean_script import clean_and_standardize
 
 class DataPipelineHandler(FileSystemEventHandler):
-    def __init__(self, config, logger):
-        self.config = config
+    def __init__(self, logger, db_path, data_proc_dir_path, archive_dir_path, input_dir_path):
         self.logger = logger
-        self.db_path = config["data"]["db_path"]
-        self.data_proc_dir = config["directories"]["data_proc_dir"]
-        self.archive_dir = config["directories"]["archive_dir"]
-        self.input_dir = config["directories"]["input_dir"]
+        self.db_path = db_path
+        self.data_proc_dir = data_proc_dir_path
+        self.archive_dir = archive_dir_path
+        self.input_dir = input_dir_path
 
     def on_created(self, event):
         # Listen only Excel files
@@ -73,18 +72,22 @@ class DataPipelineHandler(FileSystemEventHandler):
 def start_watcher():
     logger = setup_logger()
     config = load_config()
-    
-    input_dir = config["directories"]["input_dir"]
-    os.makedirs(input_dir, exist_ok=True)
-    os.makedirs(config["directories"]["data_proc_dir"], exist_ok=True)
-    os.makedirs(config["directories"]["archive_dir"], exist_ok=True)
-    os.makedirs(os.path.dirname(config["data"]["db_path"]), exist_ok=True) 
 
-    event_handler = DataPipelineHandler(config, logger)
-    observer = Observer()
-    observer.schedule(event_handler, path=input_dir, recursive=False)
+    DB_PATH = config["database"]["credit_clients"]
+    DATA_PROC_DIR = config["directories"]["data_proc_dir"]
+    ARCHIVE_DIR = config["directories"]["archive_dir"]
+    INPUT_DIR = config["directories"]["input_dir"]
     
-    logger.info(f"Watchdog is active. Waiting on new files in: {input_dir}")
+    os.makedirs(INPUT_DIR, exist_ok=True)
+    os.makedirs(DATA_PROC_DIR, exist_ok=True)
+    os.makedirs(ARCHIVE_DIR, exist_ok=True)
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True) 
+
+    event_handler = DataPipelineHandler(logger, DB_PATH, DATA_PROC_DIR, ARCHIVE_DIR, INPUT_DIR)
+    observer = Observer()
+    observer.schedule(event_handler, path=INPUT_DIR, recursive=False)
+    
+    logger.info(f"Watchdog is active. Waiting on new files in: {INPUT_DIR}")
     observer.start()
     
     try:

@@ -1,9 +1,7 @@
 from sklearn.preprocessing import StandardScaler
-from config.config import load_config
 import pandas as pd
 
 def clean_and_standardize(df_input: pd.DataFrame, logger=None) -> pd.DataFrame:
-    config = load_config()
     df_cleaned = df_input.copy()
     
     # Delete duplicates

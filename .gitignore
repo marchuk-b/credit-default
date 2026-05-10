@@ -15,7 +15,8 @@ logs/
 # Data
 data/processed/
 data/db/
-data/archived/
+data/archive/
+data/input/
 
 # Reports
 reports/

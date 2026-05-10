@@ -12,9 +12,29 @@ class MLInferenceService:
         self.model_path = model_path
         self.db_path = db_path
         self.output_csv_path = output_csv_path
-        self.model_version = "v1.0-xgboost-optimized"
         self.logger = self._setup_logger()
+        self.model_version = self._fetch_model_version() 
         self.model = None
+
+    def _fetch_model_version(self):
+        # Dynamic getting version of model from report.json    
+        import json
+        model_dir = os.path.dirname(self.model_path)
+        report_path = os.path.join(model_dir, "report.json")
+        
+        try:
+            with open(report_path, 'r', encoding='utf-8') as f:
+                report = json.load(f)
+                model_name = report.get("model_name", "xgboost")
+                exec_time = report.get("execution_time", "unknown_time")
+                
+                # Transform '2026-05-10 17:14:15.102690' on '20260510_1714'
+                clean_time = exec_time.replace("-", "").replace(":", "").replace(" ", "_")[:13]
+                
+                return f"{model_name}_{clean_time}"
+        except FileNotFoundError:
+            self.logger.warning(f"File {report_path} not found. Used version by default")
+            return "v_unknown_dynamic"
 
     def _setup_logger(self):
         logger = logging.getLogger("ML_Inference")
@@ -101,18 +121,18 @@ class MLInferenceService:
 
 if __name__ == "__main__":
     config = load_config()
-    MODEL_PATH = "artifacts/xgboost_credit_20260506_232415/model.pkl" 
+    MODEL_PATH = config["ml"]["working_model_path"]
     
     # For testing give our clean data
-    NEW_DATA_PATH = config["data"]["cleaned_path"] 
+    NEW_DATA = config["data"]["cleaned_data"] 
     
-    DB_OUTPUT_PATH = config["data"]["business_results"]
-    CSV_OUTPUT_PATH = config["data"]["predictions"]
+    DB_OUTPUT = config["database"]["business_results"]
+    CSV_OUTPUT = config["data"]["predictions"]
     
     # Initialisation and launch of the service
-    service = MLInferenceService(MODEL_PATH, DB_OUTPUT_PATH, CSV_OUTPUT_PATH)
+    service = MLInferenceService(MODEL_PATH, DB_OUTPUT, CSV_OUTPUT)
     service.load_model()
-    final_results = service.process_batch(NEW_DATA_PATH)
+    final_results = service.process_batch(NEW_DATA)
     
     print("\n--- Example of source business data (the first 5 customers) ---")
     print(final_results.head().to_markdown(index=False))

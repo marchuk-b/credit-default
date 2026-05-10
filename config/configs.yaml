@@ -1,16 +1,19 @@
 data:
-  raw_path: data/raw/data.xls
-  db_path: data/db/credit_clients.db
-  table_name: credit_data
-  balanced_table: balanced_credit_data
-  target: default
-  model_name: xgboost_credit
-  cleaned_path: data/processed/cleaned_data.csv
-  business_results: data/db/business_results.db
+  cleaned_data: data/processed/cleaned_data.csv
+  test_data: data/test_data/data.xls
   predictions: reports/scoring_predictions.csv
 directories:
-  data_proc_dir: data/processed/
+  data_proc_dir: data/processed
   input_dir: data/input
-  archive_dir: data/archived
-  artifacts_dir: artifacts/
+  archive_dir: data/archive
+  artifacts_dir: artifacts
+database:
+  target: default
+  credit_clients: data/db/credit_clients.db
+  business_results: data/db/business_results.db
+  table_name: credit_data
+  balanced_table: balanced_credit_data
+ml:
+  model_name: xgboost_credit
+  working_model_path: artifacts/xgboost_credit_20260506_232415/model.pkl
 
