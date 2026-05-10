@@ -6,6 +6,8 @@ data:
   target: default
   model_name: xgboost_credit
   cleaned_path: data/processed/cleaned_data.csv
+  business_results: data/db/business_results.db
+  predictions: reports/scoring_predictions.csv
 directories:
   data_proc_dir: data/processed/
   input_dir: data/input
