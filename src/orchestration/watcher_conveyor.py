@@ -5,10 +5,10 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 from config.config import load_config
-from src.ETL import extract_data, transform_data, load_data
-from src.logger import setup_logger
-from src.generate_synt_data import generate_balanced_credit_data
-from src.clean_script import clean_and_standardize
+from src.data.ETL import extract_data, transform_data, load_data
+from src.utils.logger import setup_logger
+from src.data.generate_synt_data import generate_balanced_credit_data
+from src.data.clean_script import clean_and_standardize
 
 class DataPipelineHandler(FileSystemEventHandler):
     def __init__(self, logger, db_path, data_proc_dir_path, archive_dir_path, input_dir_path):

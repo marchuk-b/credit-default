@@ -1,8 +1,8 @@
 from config.config import load_config
-from src.ETL import extract_data, transform_data, load_data
-from src.logger import setup_logger
-from src.generate_synt_data import generate_balanced_credit_data
-from src.clean_script import clean_and_standardize
+from src.data.ETL import extract_data, transform_data, load_data
+from src.utils.logger import setup_logger
+from src.data.generate_synt_data import generate_balanced_credit_data
+from src.data.clean_script import clean_and_standardize
 
 import os
 import shutil
