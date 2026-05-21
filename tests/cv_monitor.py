@@ -3,8 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import logging
+import joblib
+import os
 from sklearn.model_selection import cross_val_score, StratifiedKFold
-from xgboost import XGBClassifier
 from config.config import load_config
 
 logging.basicConfig(
@@ -12,7 +13,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("logs/cv_monitor.log", encoding='utf-8') # Logs will be in file and in console
+        logging.FileHandler("logs/cv_monitor.log", encoding='utf-8') 
     ]
 )
 logger = logging.getLogger("CV_Monitor")
@@ -26,19 +27,21 @@ df = pd.read_csv(config["data"]["cleaned_data"])
 X = df.drop(columns=['default', 'client_id'], errors='ignore')
 y = df['default']
 
-# Initialize model
-model = XGBClassifier(
-    learning_rate=0.05, 
-    max_depth=5, 
-    n_estimators=200, 
-    subsample=0.8, 
-    eval_metric='logloss', 
-    random_state=42
-)
+# Load the pre-trained model
+model_path = config["ml"]["working_model_path"]
+logger.info(f"Loading saved model from {model_path}...")
+try:
+    model = joblib.load(model_path)
+    logger.info("Model loaded successfully.")
+except Exception as e:
+    logger.error(f"Critical error loading the model: {e}")
+    raise
 
 # Conducting a five-fold cross-validation
 logger.info("Performing 5-fold cross-validation (this may take a minute)...")
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# cross_val_score automatically uses the parameters of the loaded model
 cv_scores = cross_val_score(model, X, y, cv=cv, scoring='f1')
 
 mean_score = np.mean(cv_scores)
@@ -66,4 +69,5 @@ plt.xlabel("Stages of testing (Folds)")
 plt.legend()
 plt.tight_layout()
 plt.show()
+
 logger.info("CV Monitor completed successfully.")

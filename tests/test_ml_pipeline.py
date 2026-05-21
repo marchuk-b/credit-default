@@ -8,7 +8,7 @@ from config.config import load_config
 # --- Fixtures (Preparing data for tests) ---
 @pytest.fixture(scope="session")
 def logger():
-    """Фікстура для логера тестів"""
+    """Test logger fixture"""
     test_logger = logging.getLogger("PyTest_ML")
     test_logger.setLevel(logging.INFO)
     # To prevent pytest logs from being duplicated when we configure them
