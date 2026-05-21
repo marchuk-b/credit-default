@@ -15,5 +15,6 @@ database:
   balanced_table: balanced_credit_data
 ml:
   model_name: xgboost_credit
-  working_model_path: artifacts/xgboost_credit_20260506_232415/model.pkl
+  working_model_path: artifacts/xgboost_credit_20260521_131856/model.pkl
+  working_scaler_path: artifacts/xgboost_credit_20260521_131856/scaler.pkl
 

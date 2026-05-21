@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import joblib
 import sqlite3
-import logging
 import os
 from datetime import datetime
 
@@ -88,18 +87,23 @@ class MLInferenceService:
             raise
 
     def save_results(self, results_df: pd.DataFrame) -> None:
-        # Save in CSV
-        os.makedirs(os.path.dirname(self.output_csv_path), exist_ok=True)
-        results_df.to_csv(self.output_csv_path, index=False)
-        self.logger.info(f"Results saved in file: {self.output_csv_path}")
+        base_dir = os.path.dirname(self.output_csv_path)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
-        # Save in SQLite
+        dynamic_csv_path = os.path.join(base_dir, f"predictions_{timestamp}.csv")
+        
+        # Save in csv
+        os.makedirs(base_dir, exist_ok=True)
+        results_df.to_csv(dynamic_csv_path, index=False)
+        self.logger.info(f"Results saved to a unique file: {dynamic_csv_path}")
+        
+        # Save in DB
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         conn = sqlite3.connect(self.db_path)
         # Add results in table (if_exists='append' add new data to already existing)
         results_df.to_sql('client_scoring_results', conn, if_exists='append', index=False)
         conn.close()
-        self.logger.info(f"Results successfully in DB: {self.db_path} (Table: client_scoring_results)")
+        self.logger.info(f"Results successfully appended to DB: {self.db_path} (Table: client_scoring_results)")
 
 if __name__ == "__main__":
     config = load_config()
