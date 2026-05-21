@@ -1,12 +1,12 @@
 import logging
 import os
 
-def setup_logger() -> logging.Logger:
+def setup_logger(name: str, log_file: str) -> logging.Logger:
     # Create logs directory if it doesn't exist
     os.makedirs("logs", exist_ok=True)
     
     # Create a custom logger
-    logger = logging.getLogger("CreditPipeline")
+    logger = logging.getLogger(name)
     
     # Check if handlers already exist to avoid duplicate logs
     if not logger.handlers:
@@ -14,14 +14,13 @@ def setup_logger() -> logging.Logger:
 
         # Create handlers
         c_handler = logging.StreamHandler()      # Console (Terminal) handler
-        f_handler = logging.FileHandler("logs/conveyor.log") # File handler
+        f_handler = logging.FileHandler(f"logs/{log_file}", encoding='utf-8') # File handler
 
         # Create formatting and add it to handlers
-        c_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        f_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         
-        c_handler.setFormatter(c_format)
-        f_handler.setFormatter(f_format)
+        c_handler.setFormatter(formatter)
+        f_handler.setFormatter(formatter)
 
         # Add handlers to the logger
         logger.addHandler(c_handler)

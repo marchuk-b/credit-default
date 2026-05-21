@@ -71,7 +71,7 @@ class DataPipelineHandler(FileSystemEventHandler):
 
 
 def start_watcher() -> None:
-    logger = setup_logger()
+    logger = setup_logger("Conveyor", "watcher_conveyor.log")
     config = load_config()
 
     DB_PATH = config["database"]["credit_clients"]

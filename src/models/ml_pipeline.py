@@ -4,7 +4,9 @@ import joblib
 import logging
 import os
 from datetime import datetime
+
 from config.config import load_config
+from src.utils.logger import setup_logger
 
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
@@ -15,7 +17,7 @@ class CreditScoringPipeline:
         self.data_path = data_path
         self.base_output_dir = base_output_dir
         self.model_name = model_name
-        self.logger = self._setup_logger()
+        self.logger = setup_logger(name="ML_Pipeline", log_file="pipeline.log")
         
         # Generating a unique folder name based on the time
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -26,16 +28,6 @@ class CreditScoringPipeline:
         self.report_save_path = os.path.join(self.run_dir, "report.json")
         
         self.report = {"execution_time": str(datetime.now())}
-
-    def _setup_logger(self) -> logging.Logger:
-        logger = logging.getLogger("ML_Pipeline")
-        logger.setLevel(logging.INFO)
-        if not logger.handlers:
-            ch = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-            ch.setFormatter(formatter)
-            logger.addHandler(ch)
-        return logger
 
     def load_data(self) -> None:
         self.logger.info("Loading data...")

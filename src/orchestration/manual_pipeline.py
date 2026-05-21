@@ -8,7 +8,7 @@ import os
 import shutil
 
 if __name__ == "__main__":
-    logger = setup_logger()
+    logger = setup_logger("Conveyor", "manual_pipeline.log")
     config = load_config()
 
     DB_PATH = config["database"]["credit_clients"]

@@ -5,14 +5,16 @@ import sqlite3
 import logging
 import os
 from datetime import datetime
+
 from config.config import load_config
+from src.utils.logger import setup_logger
 
 class MLInferenceService:
     def __init__(self, model_path: str, db_path: str, output_csv_path: str):
         self.model_path = model_path
         self.db_path = db_path
         self.output_csv_path = output_csv_path
-        self.logger = self._setup_logger()
+        self.logger = setup_logger(name="ML_Inference", log_file="inference.log")
         self.model_version = self._fetch_model_version() 
         self.model = None
 
@@ -35,26 +37,6 @@ class MLInferenceService:
         except FileNotFoundError:
             self.logger.warning(f"File {report_path} not found. Used version by default")
             return "v_unknown_dynamic"
-
-    def _setup_logger(self) -> logging.Logger:
-        logger = logging.getLogger("ML_Inference")
-        logger.setLevel(logging.INFO)
-        
-        if not logger.handlers:
-            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-            
-            # Handler for printing in console
-            ch = logging.StreamHandler()
-            ch.setFormatter(formatter)
-            logger.addHandler(ch)
-            
-            # NEW: Handler for writing in a file
-            os.makedirs("logs", exist_ok=True)
-            fh = logging.FileHandler("logs/inference.log", encoding='utf-8')
-            fh.setFormatter(formatter)
-            logger.addHandler(fh)
-            
-        return logger
 
     def load_model(self) -> None:
         try:
