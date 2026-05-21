@@ -32,7 +32,7 @@ def run_pipeline():
         df_transformed = transform_data(df_raw, logger=logger)
         logger.info(f"Transformed data shape: {df_transformed.shape}")
 
-        # Збереження сирих даних у першу таблицю
+        # Saving raw data in table
         load_data(df_raw, DB_PATH, "raw_credit_data", logger=logger)
 
         logger.info("ETL pipeline completed successfully")

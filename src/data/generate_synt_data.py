@@ -4,7 +4,6 @@ from typing import Tuple
 from ctgan import CTGAN
 from config.config import load_config
 
-
 def generate_balanced_credit_data(train_df: pd.DataFrame, epochs=50, batch_size=500, logger=None) -> Tuple[pd.DataFrame, CTGAN]:
     config = load_config()
     target_col = config["database"]["target"]

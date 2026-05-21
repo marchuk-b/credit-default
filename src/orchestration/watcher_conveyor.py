@@ -29,12 +29,12 @@ class DataPipelineHandler(FileSystemEventHandler):
         start_time = time.time()
         
         try:
-            # 1. INGESTION & VALIDATION
+            # INGESTION & VALIDATION
             self.logger.info("Step 1: Reading and validation...")
             # extract_data already include pd.read_excel and validate_raw_data
             df_raw = extract_data(file_path, logger=self.logger) 
             
-            # 2. TRANSFORMATION
+            # TRANSFORMATION
             self.logger.info("Step 2: ETL Transform...")
             df_transformed = transform_data(df_raw, logger=self.logger)
 
@@ -44,7 +44,7 @@ class DataPipelineHandler(FileSystemEventHandler):
             self.logger.info("Step 4: Clearing and standardization...")
             df_final = clean_and_standardize(df_balanced, logger=self.logger)
 
-            # 3. STORAGE
+            # STORAGE
             self.logger.info("Step 5: Saving results...")
             
             # Saving in SQLite
@@ -58,7 +58,7 @@ class DataPipelineHandler(FileSystemEventHandler):
             df_final.to_csv(processed_csv_path, index=False)
             self.logger.info(f"CSV saved: {processed_csv_path}")
 
-            # 4. Archivation
+            # Archivation
             os.makedirs(self.archive_dir, exist_ok=True)
             shutil.move(file_path, os.path.join(self.archive_dir, file_name))
             
