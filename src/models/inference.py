@@ -8,7 +8,7 @@ from datetime import datetime
 from config.config import load_config
 
 class MLInferenceService:
-    def __init__(self, model_path, db_path, output_csv_path):
+    def __init__(self, model_path: str, db_path: str, output_csv_path: str):
         self.model_path = model_path
         self.db_path = db_path
         self.output_csv_path = output_csv_path
@@ -16,7 +16,7 @@ class MLInferenceService:
         self.model_version = self._fetch_model_version() 
         self.model = None
 
-    def _fetch_model_version(self):
+    def _fetch_model_version(self) -> str:
         # Dynamic getting version of model from report.json    
         import json
         model_dir = os.path.dirname(self.model_path)
@@ -36,7 +36,7 @@ class MLInferenceService:
             self.logger.warning(f"File {report_path} not found. Used version by default")
             return "v_unknown_dynamic"
 
-    def _setup_logger(self):
+    def _setup_logger(self) -> logging.Logger:
         logger = logging.getLogger("ML_Inference")
         logger.setLevel(logging.INFO)
         
@@ -48,7 +48,7 @@ class MLInferenceService:
             ch.setFormatter(formatter)
             logger.addHandler(ch)
             
-            # 2. NEW: Handler for writing in a file
+            # NEW: Handler for writing in a file
             os.makedirs("logs", exist_ok=True)
             fh = logging.FileHandler("logs/inference.log", encoding='utf-8')
             fh.setFormatter(formatter)
@@ -56,7 +56,7 @@ class MLInferenceService:
             
         return logger
 
-    def load_model(self):
+    def load_model(self) -> None:
         try:
             self.logger.info(f"Loading model from {self.model_path}...")
             self.model = joblib.load(self.model_path)
@@ -65,7 +65,7 @@ class MLInferenceService:
             self.logger.error(f"Error: {e}")
             raise
 
-    def process_batch(self, data_path):
+    def process_batch(self, data_path: str) -> pd.DataFrame:
         try:
             self.logger.info(f"Reading new input data from {data_path}...")
             df = pd.read_csv(data_path)
@@ -105,7 +105,7 @@ class MLInferenceService:
             self.logger.error(f"Critical error while processing the data packet: {e}")
             raise
 
-    def save_results(self, results_df):
+    def save_results(self, results_df: pd.DataFrame) -> None:
         # Save in CSV
         os.makedirs(os.path.dirname(self.output_csv_path), exist_ok=True)
         results_df.to_csv(self.output_csv_path, index=False)

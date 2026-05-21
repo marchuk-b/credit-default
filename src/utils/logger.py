@@ -1,7 +1,7 @@
 import logging
 import os
 
-def setup_logger():
+def setup_logger() -> logging.Logger:
     # Create logs directory if it doesn't exist
     os.makedirs("logs", exist_ok=True)
     

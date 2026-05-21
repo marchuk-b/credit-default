@@ -7,7 +7,7 @@ from src.data.clean_script import clean_and_standardize
 import os
 import shutil
 
-def run_pipeline():
+if __name__ == "__main__":
     logger = setup_logger()
     config = load_config()
 
@@ -84,6 +84,3 @@ def run_pipeline():
         raise
 
     logger.info("Full pipeline executed successfully.")
-
-if __name__ == "__main__":
-    run_pipeline()

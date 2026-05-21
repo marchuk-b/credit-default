@@ -11,7 +11,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from xgboost import XGBClassifier
 
 class CreditScoringPipeline:
-    def __init__(self, data_path, base_output_dir, model_name="xgboost_credit"):
+    def __init__(self, data_path: str, base_output_dir: str, model_name: str):
         self.data_path = data_path
         self.base_output_dir = base_output_dir
         self.model_name = model_name
@@ -27,7 +27,7 @@ class CreditScoringPipeline:
         
         self.report = {"execution_time": str(datetime.now())}
 
-    def _setup_logger(self):
+    def _setup_logger(self) -> logging.Logger:
         logger = logging.getLogger("ML_Pipeline")
         logger.setLevel(logging.INFO)
         if not logger.handlers:
@@ -37,14 +37,14 @@ class CreditScoringPipeline:
             logger.addHandler(ch)
         return logger
 
-    def load_data(self):
+    def load_data(self) -> None:
         self.logger.info("Loading data...")
         self.df = pd.read_csv(self.data_path)
         self.report["dataset"] = os.path.basename(self.data_path)
         self.report["data_shape"] = self.df.shape
         self.logger.info(f"Loaded {self.df.shape[0]} records.")
 
-    def check_data_quality(self):
+    def check_data_quality(self) -> None:
         self.logger.info("Automated Data Quality Control...")
         
         # Missing values
@@ -72,7 +72,7 @@ class CreditScoringPipeline:
         if class_balance.get(1, 0) < 0.1:
              self.logger.warning("Warning: severe class imbalance!")
 
-    def train_and_evaluate(self):
+    def train_and_evaluate(self) -> None:
         self.logger.info("Data preparation and splitting (Train/Test)...")
         X = self.df.drop('default', axis=1)
         y = self.df['default']
@@ -121,7 +121,7 @@ class CreditScoringPipeline:
         self.logger.info(f"Metrics: {metrics}")
         self.model = model
 
-    def save_artifacts(self):
+    def save_artifacts(self) -> None:
         self.logger.info("Saving results...")
         
         # Create a unique directory for the current run
@@ -136,7 +136,7 @@ class CreditScoringPipeline:
         self.logger.info(f"All artifacts have been saved to a folder: {self.run_dir}")
         self.logger.info("The ML-conveyor has successfully completed its operation!")
 
-    def run(self):
+    def run(self) -> None:
         self.load_data()
         self.check_data_quality()
         self.train_and_evaluate()

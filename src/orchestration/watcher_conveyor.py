@@ -1,6 +1,7 @@
 import os
 import time
 import shutil
+import logging
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -11,14 +12,14 @@ from src.data.generate_synt_data import generate_balanced_credit_data
 from src.data.clean_script import clean_and_standardize
 
 class DataPipelineHandler(FileSystemEventHandler):
-    def __init__(self, logger, db_path, data_proc_dir_path, archive_dir_path, input_dir_path):
+    def __init__(self, logger: logging.Logger, db_path: str, data_proc_dir_path: str, archive_dir_path: str, input_dir_path: str):
         self.logger = logger
         self.db_path = db_path
         self.data_proc_dir = data_proc_dir_path
         self.archive_dir = archive_dir_path
         self.input_dir = input_dir_path
 
-    def on_created(self, event):
+    def on_created(self, event) -> None:
         # Listen only Excel files
         if event.is_directory or not event.src_path.endswith(('.xls', '.xlsx')):
             return
@@ -69,7 +70,7 @@ class DataPipelineHandler(FileSystemEventHandler):
             self.logger.error(f"Critical error: {e}", exc_info=True)
 
 
-def start_watcher():
+def start_watcher() -> None:
     logger = setup_logger()
     config = load_config()
 
